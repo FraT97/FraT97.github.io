@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Francesco — Web Development</title>
+<meta name="description" content="Web development portfolio and projects">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0a0a; --bg-2:#1b1213;
+    --ink:#f3e9e4; --ink-dim:#b9a39e;
+    --hl:#c9394f; --accent:#b0223a;
+    --alt:#6b0e1d; --alt-ink:#f3e9e4; --alt-text:#f3e9e4;
+    --tint:#8a1226; --line:rgba(243,233,228,.28);
+    --header-bg:rgba(12,10,10,.9);
+    --serif:"Bodoni Moda", "Didot", serif; --dw:400; --dlh:.9; --dls:-.02em;
+    --mono:"DM Mono", "Courier New", monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block}
+  .serif{font-family:var(--serif);font-weight:var(--dw);text-transform:uppercase;line-height:var(--dlh);letter-spacing:var(--dls);margin:0}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ink);border-radius:999px;padding:10px 20px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:.95rem;background:transparent;color:var(--ink);cursor:pointer;transition:background .25s,color .25s}
+  .pill:hover{background:var(--ink);color:var(--bg)}
+  .pill.sm{padding:6px 14px;font-size:.8rem}
+
+  /* ---------- header ---------- */
+  header{position:fixed;inset:0 0 auto 0;z-index:20;padding:22px 4vw;display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+  header.scrolled{background:var(--header-bg);backdrop-filter:blur(8px)}
+  .logo{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+  .logo .mark{position:relative;font-family:var(--serif);font-size:2.6rem;font-weight:400;letter-spacing:-.02em}
+  .logo .mark svg{position:absolute;width:34px;height:52px;left:22px;top:-22px;color:var(--accent)}
+  .logo .sub{font-family:var(--serif);font-size:.95rem;letter-spacing:.12em;margin-top:2px}
+  nav.links{display:flex;gap:34px;margin-left:60px;margin-right:auto}
+  nav.links a{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:1rem}
+  nav.links a:hover{color:var(--hl)}
+  @media (max-width:760px){nav.links{display:none} header .pill{padding:7px 14px;font-size:.8rem}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;height:max(76vw,760px);max-height:1250px}
+  .hero .w{position:absolute;z-index:3;font-size:clamp(4rem,11.5vw,11rem);color:var(--ink);pointer-events:none}
+  .hero .w1{left:16%;top:21%}
+  .hero .w2{right:4%;top:58%}
+  .hero figure{position:absolute;margin:0;overflow:hidden;background:var(--bg-2)}
+  .hero .a{left:12%;top:28%;width:23%;aspect-ratio:5/4}
+  .hero .b{right:15%;top:26%;width:15%;aspect-ratio:3/4}
+  .hero .c{left:40%;top:66%;width:34%;aspect-ratio:16/9}
+  .hero-copy{position:absolute;left:3%;top:72%;width:27%;font-size:clamp(1rem,1.9vw,1.6rem);line-height:1.25;z-index:3}
+  @media (max-width:800px){
+    .hero{height:auto;max-height:none;padding:130px 16px 40px;display:flex;flex-direction:column;gap:0}
+    .hero .w,.hero figure,.hero-copy{position:relative;left:auto;right:auto;top:auto;width:auto}
+    .hero .w1{align-self:flex-start;margin-bottom:-.35em}
+    .hero .a{width:78%;margin-left:6%}
+    .hero .b{width:42%;align-self:flex-end;margin-top:-12%}
+    .hero .w2{align-self:flex-end;margin:10px 0 -.35em;font-size:clamp(3rem,15vw,6rem)}
+    .hero .c{width:90%;align-self:flex-end}
+    .hero-copy{margin-top:28px;font-size:1.1rem}
+  }
+
+  /* tinted "photo" treatment for screenshots */
+  .tint{position:relative}
+  .tint img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(1) contrast(1.15) brightness(.9);transition:filter .6s, transform .8s}
+  .tint::after{content:"";position:absolute;inset:0;background:var(--tint);mix-blend-mode:multiply;opacity:.6;transition:opacity .6s;pointer-events:none}
+  .tint:hover img{filter:none;transform:scale(1.03)}
+  .tint:hover::after{opacity:0}
+  .ph{width:100%;height:100%;background:linear-gradient(135deg,var(--bg-2),var(--bg))}
+
+  /* ---------- selected work (showreel-style) ---------- */
+  .selected{padding:140px 4vw 120px;text-align:center}
+  .selected h2{font-size:clamp(3.2rem,8vw,7.5rem)}
+  .selected p.lede{max-width:960px;margin:40px auto 70px;font-size:clamp(1rem,1.7vw,1.4rem);line-height:1.3}
+  .frame{position:relative;max-width:1340px;margin:0 auto;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer}
+  .frame img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(.85) brightness(.6);transition:filter .6s, transform .9s}
+  .frame:hover img{filter:grayscale(0) brightness(.85);transform:scale(1.02)}
+  .frame .play{position:absolute;inset:0;margin:auto;width:clamp(90px,13vw,190px);height:clamp(90px,13vw,190px);border-radius:50%;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:grid;place-items:center;border:1px solid rgba(230,232,255,.25)}
+  .frame .play span{font-size:.9rem}
+  .frame .bar{position:absolute;left:0;right:0;bottom:0;padding:20px 26px;display:flex;justify-content:space-between;gap:12px;background:linear-gradient(transparent,rgba(0,0,0,.65));text-align:left;font-size:.95rem}
+  .frame .bar .t{font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);text-transform:uppercase;font-weight:var(--dw)}
+
+  /* ---------- statement (periwinkle collage) ---------- */
+  .statement{position:relative;background:var(--alt);height:max(64vw,700px);max-height:1050px;overflow:hidden}
+  .statement figure{position:absolute;margin:0;overflow:hidden}
+  .statement figure img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .statement .s1{left:27%;top:0;width:35%;height:62%}
+  .statement .s2{left:0;top:62%;width:30%;height:38%}
+  .statement .s3{right:0;top:8%;width:30%;height:40%}
+  .statement .s4{left:52%;top:60%;width:14%;height:30%}
+  .statement h2{position:absolute;inset:0;margin:auto;height:fit-content;width:min(92%,1150px);text-align:center;font-size:clamp(2.6rem,7.2vw,7rem);color:var(--alt-ink);z-index:2}
+  @media (max-width:800px){.statement .s3,.statement .s4{display:none}.statement .s1{left:10%;width:80%;height:55%}.statement .s2{width:60%}}
+
+  /* ---------- projects ---------- */
+  .projects{padding:130px 4vw 80px}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:56px}
+  .head h2{font-size:clamp(3rem,8vw,7rem)}
+  .head p{margin:12px 0 0;color:var(--ink-dim)}
+  .filters{display:flex;flex-wrap:wrap;gap:8px}
+  .filters .pill.on{background:var(--ink);color:var(--bg)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:64px 40px}
+  @media (max-width:380px){.grid{grid-template-columns:1fr}}
+  .card{display:flex;flex-direction:column;gap:16px}
+  .card .thumb{aspect-ratio:16/10;background:var(--bg-2)}
+  .card h3{font-size:clamp(1.9rem,2.8vw,2.6rem)}
+  .card p{margin:0;color:var(--ink-dim);font-size:.98rem}
+  .card .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.82rem;color:var(--hl)}
+  .card .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .card .num{font-size:.85rem;color:var(--hl)}
+  .status{padding:24px 0;color:var(--ink-dim)}
+
+  /* ---------- about / contact ---------- */
+  .about{padding:120px 4vw;display:grid;grid-template-columns:1fr 1.2fr;gap:6vw;align-items:start;border-top:1px solid var(--line)}
+  .about h2{font-size:clamp(3rem,8vw,7rem)}
+  .about p{font-size:clamp(1rem,1.6vw,1.3rem);line-height:1.35;margin:0 0 30px}
+  .skills{display:flex;flex-wrap:wrap;gap:10px 18px;color:var(--hl)}
+  .skills span::before{content:"✦ ";color:var(--accent)}
+  @media (max-width:800px){.about{grid-template-columns:1fr}}
+
+  .contact{background:var(--alt);color:var(--alt-text);padding:140px 4vw;text-align:center}
+  .contact h2{font-size:clamp(3.4rem,11vw,10rem);color:var(--alt-ink)}
+  .contact p{font-size:clamp(1rem,1.6vw,1.3rem);margin:30px auto 40px;max-width:640px}
+  .contact .pill{border-color:var(--alt-text);color:var(--alt-text)}
+  .contact .pill:hover{background:var(--alt-text);color:var(--alt)}
+  .contact .btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+
+  footer{padding:30px 4vw;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.85rem;color:var(--ink-dim)}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0;transform:translateY(50px);transition:opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+  /* ---------- preview modal ---------- */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal.open{display:flex}
+  .modal-box{width:min(1300px,100%);height:min(88vh,860px);display:flex;flex-direction:column;border:1px solid var(--line);background:var(--bg)}
+  .modal-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.85rem}
+  .modal-bar .url{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-dim)}
+  .modal iframe{flex:1;border:0;width:100%;background:#fff}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <a href="#" class="logo" aria-label="Home">
+    <span class="mark"><span id="logoInitials">FC</span>
+      <svg viewBox="0 0 34 52" aria-hidden="true"><path fill="currentColor" d="M17 0 L18.6 23 L34 26 L18.6 29 L17 52 L15.4 29 L0 26 L15.4 23 Z"/></svg>
+    </span>
+    <span class="sub" id="logoSub">DEVELOPMENT</span>
+  </a>
+  <nav class="links">
+    <a href="#work">Portfolio</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="pill" href="#contact">Contact me</a>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <h1 class="serif w w1 reveal" id="w1">Crafted</h1>
+    <figure class="a tint reveal" data-speed="-0.06"><div class="ph"></div></figure>
+    <figure class="b tint reveal" data-speed="0.08"><div class="ph"></div></figure>
+    <h1 class="serif w w2 reveal" id="w2">Websites</h1>
+    <figure class="c tint reveal" data-speed="-0.04"><div class="ph"></div></figure>
+    <p class="hero-copy mono reveal" id="heroCopy">I build clean, fast websites that tell your story. I combine design, code and care.</p>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="selected" id="work">
+    <h2 class="serif reveal">Selected work</h2>
+    <p class="lede mono reveal" id="selectedLede">A curated selection of websites and tools I've designed and built — client work for real organisations alongside personal projects, each chosen because it represents the kind of work I enjoy most.</p>
+    <div class="frame reveal" id="frame">
+      <div class="ph"></div>
+      <div class="play"><span class="mono">View&nbsp;site</span></div>
+      <div class="bar"><span class="t" id="frameTitle"></span><span class="mono" id="frameTags"></span></div>
+    </div>
+  </section>
+
+  <!-- STATEMENT -->
+  <section class="statement">
+    <figure class="s1 reveal" data-speed="0.05"><div class="ph"></div></figure>
+    <figure class="s2 reveal" data-speed="-0.05"><div class="ph"></div></figure>
+    <figure class="s3 reveal" data-speed="0.07"><div class="ph"></div></figure>
+    <figure class="s4 reveal" data-speed="-0.08"><div class="ph"></div></figure>
+    <h2 class="serif reveal" id="statement">I build distinctive websites with a fresh perspective and an eye for detail.</h2>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <div class="head">
+      <div>
+        <h2 class="serif reveal">All projects</h2>
+        <p class="mono" id="repoCount">Loaded live from GitHub</p>
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="status mono" id="status">Loading projects…</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <h2 class="serif reveal">About</h2>
+    <div class="reveal">
+      <p class="mono" id="aboutText">I'm Francesco, a web developer and environmental science student. I build websites for organisations and people with something to say, and I love turning complex information into something clear and beautiful.</p>
+      <div class="skills mono" id="skills"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <h2 class="serif reveal">Let's talk</h2>
+    <p class="mono reveal">Have a project in mind? I'd love to hear about it.</p>
+    <div class="btns reveal" id="contactBtns"></div>
+  </section>
+</main>
+
+<footer class="mono"><span id="copy"></span><a href="#top">Back to top ↑</a></footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-bar mono">
+      <span class="url" id="modalUrl"></span>
+      <span style="display:flex;gap:8px">
+        <a class="pill sm" id="modalOpen" href="#" target="_blank" rel="noopener">Open ↗</a>
+        <button class="pill sm" id="modalClose">Close ✕</button>
+      </span>
+    </div>
+    <iframe id="modalFrame" title="Live preview"></iframe>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   EDIT THIS BLOCK — everything else updates automatically
+   ========================================================= */
+const CONFIG = {
+  name: "Francesco",
+  logoInitials: "FT",
+  logoSub: "DEVELOPMENT",
+  githubUser: "FraT97",                 // your GitHub username
+  email: "you@example.com",
+  linkedin: "",                         // full URL, or leave empty
+
+  heroWords: ["Crafted", "Websites"],
+  statement: "I build distinctive websites with a fresh perspective and an eye for detail.",
+
+  // GitHub filtering
+  onlyTopic: null,                      // e.g. "portfolio" → show only repos with that topic
+  includeForks: false,
+  hideRepos: ["FrancescoT-portfolio.io", "FraT97.github.io"],  // this website's own repo
+  pinFirst: [],                         // repo names to show first
+
+  skills: ["HTML", "CSS", "JavaScript", "WordPress", "Responsive design", "Git & GitHub", "R"],
+
+  // Projects not on GitHub. The FIRST one is the big "Selected work" piece.
+  featured: [
+    {
+      title: "NSDE Foundation",
+      description: "WordPress website for a foundation supporting education for Afghan girls — site build, custom CSS and content structure.",
+      url: "https://example.org",       // ← real site URL
+      image: "",                        // optional; empty = automatic screenshot of the URL
+      tags: ["WordPress", "CSS", "Non-profit"]
+    }
+  ]
+};
+/* ========================================================= */
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shot = (url, w = 1200) => `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=${w}&h=${Math.round(w * .62)}`;
+const ghUrl = `https://github.com/${CONFIG.githubUser}`;
+
+/* ---------- static content ---------- */
+$("#logoInitials").textContent = CONFIG.logoInitials;
+$("#logoSub").textContent = CONFIG.logoSub;
+$("#w1").textContent = CONFIG.heroWords[0];
+$("#w2").textContent = CONFIG.heroWords[1];
+$("#statement").textContent = CONFIG.statement;
+$("#skills").innerHTML = CONFIG.skills.map(s => `<span>${esc(s)}</span>`).join("");
+$("#contactBtns").innerHTML =
+  `<a class="pill" href="mailto:${esc(CONFIG.email)}">${esc(CONFIG.email)}</a>
+   <a class="pill" href="${ghUrl}" target="_blank" rel="noopener">GitHub ↗</a>` +
+  (CONFIG.linkedin ? `<a class="pill" href="${esc(CONFIG.linkedin)}" target="_blank" rel="noopener">LinkedIn ↗</a>` : "");
+$("#copy").textContent = `© ${new Date().getFullYear()} ${CONFIG.name}`;
+
+/* ---------- header on scroll + parallax ---------- */
+const parallax = $$("[data-speed]");
+let ticking = false;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+addEventListener("scroll", () => {
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    $("#top").classList.toggle("scrolled", scrollY > 40);
+    if (!reduce && innerWidth > 800) {
+      parallax.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const offset = (r.top + r.height / 2 - innerHeight / 2) * parseFloat(el.dataset.speed);
+        el.style.translate = `0 ${offset}px`;
+      });
+    }
+    ticking = false;
+  });
+}, { passive: true });
+
+/* ---------- reveal on scroll ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .12 });
+const observe = () => $$(".reveal:not(.in)").forEach(el => io.observe(el));
+observe();
+
+/* ---------- preview modal ---------- */
+function openPreview(url){
+  $("#modalFrame").src = url; $("#modalUrl").textContent = url; $("#modalOpen").href = url;
+  $("#modal").classList.add("open"); document.body.style.overflow = "hidden";
+}
+function closePreview(){
+  $("#modal").classList.remove("open"); $("#modalFrame").src = "about:blank"; document.body.style.overflow = "";
+}
+$("#modalClose").onclick = closePreview;
+$("#modal").onclick = e => { if (e.target.id === "modal") closePreview(); };
+addEventListener("keydown", e => { if (e.key === "Escape") closePreview(); });
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-preview]");
+  if (b) { e.preventDefault(); openPreview(b.dataset.preview); }
+});
+
+/* ---------- helpers ---------- */
+function setImg(fig, src, alt = ""){
+  if (!fig || !src) return;
+  fig.querySelector(".ph")?.remove();
+  let img = fig.querySelector("img");
+  if (!img) { img = document.createElement("img"); img.loading = "lazy"; fig.prepend(img); }
+  img.src = src; img.alt = alt;
+}
+function liveUrl(r){
+  if (r.homepage) return r.homepage.startsWith("http") ? r.homepage : "https://" + r.homepage;
+  if (r.has_pages) return `https://${CONFIG.githubUser}.github.io/${r.name === CONFIG.githubUser + ".github.io" ? "" : r.name + "/"}`;
+  return null;
+}
+const prettyName = n => n.replace(/[-_]/g, " ");
+const year = d => new Date(d).getFullYear();
+
+/* ---------- featured (big frame) ---------- */
+const lead = CONFIG.featured[0];
+if (lead) {
+  setImg($("#frame"), lead.image || shot(lead.url, 1600), lead.title);
+  $("#frameTitle").textContent = lead.title;
+  $("#frameTags").textContent = (lead.tags || []).join(" · ");
+  $("#frame").dataset.preview = lead.url;
+} else {
+  $("#frame").remove();
+}
+
+/* ---------- project list ---------- */
+let items = [], activeFilter = "All";
+
+function toItems(repos){
+  const fromFeatured = CONFIG.featured.map(f => ({
+    title: f.title, description: f.description, live: f.url, code: null,
+    image: f.image || shot(f.url), tags: f.tags || [], lang: "Client work", year: null, stars: 0
+  }));
+  const fromRepos = repos.map(r => {
+    const live = liveUrl(r);
+    return {
+      title: prettyName(r.name), description: r.description || "", live, code: r.html_url,
+      image: live ? shot(live) : `https://opengraph.githubassets.com/1/${CONFIG.githubUser}/${r.name}`,
+      tags: (r.topics || []).slice(0, 4), lang: r.language, year: year(r.pushed_at), stars: r.stargazers_count
+    };
+  });
+  return [...fromFeatured, ...fromRepos];
+}
+
+function renderGrid(){
+  const list = activeFilter === "All" ? items : items.filter(i => i.lang === activeFilter);
+  $("#grid").innerHTML = list.map((p, i) => `
+    <article class="card reveal">
+      <figure class="thumb tint" style="margin:0;overflow:hidden">
+        <img src="${esc(p.image)}" alt="${esc(p.title)} preview" loading="lazy">
+      </figure>
+      <span class="num mono">${String(i + 1).padStart(2, "0")} ${p.lang ? "— " + esc(p.lang) : ""}</span>
+      <h3 class="serif">${esc(p.title)}</h3>
+      ${p.description ? `<p class="mono">${esc(p.description)}</p>` : ""}
+      <div class="meta mono">
+        ${p.tags.map(t => `<span>${esc(t)}</span>`).join("")}
+        ${p.year ? `<span>${p.year}</span>` : ""}
+        ${p.stars ? `<span>★ ${p.stars}</span>` : ""}
+      </div>
+      <div class="actions">
+        ${p.live ? `<button class="pill sm" data-preview="${esc(p.live)}">Preview</button>
+                    <a class="pill sm" href="${esc(p.live)}" target="_blank" rel="noopener">Visit ↗</a>` : ""}
+        ${p.code ? `<a class="pill sm" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>` : ""}
+      </div>
+    </article>`).join("");
+  observe();
+}
+
+function renderFilters(){
+  const opts = ["All", ...new Set(items.map(i => i.lang).filter(Boolean))];
+  if (opts.length < 3) { $("#filters").innerHTML = ""; return; }
+  $("#filters").innerHTML = opts.map(o => `<button class="pill sm ${o === activeFilter ? "on" : ""}" data-f="${esc(o)}">${esc(o)}</button>`).join("");
+  $("#filters").onclick = e => {
+    const b = e.target.closest("[data-f]"); if (!b) return;
+    activeFilter = b.dataset.f; renderFilters(); renderGrid();
+  };
+}
+
+function fillCollages(){
+  // Prefer live-site screenshots; fall back to any project image
+  const pool = [...items.filter(i => i.live), ...items.filter(i => !i.live)].map(i => i.image);
+  if (!pool.length) return;
+  const figs = [".hero .a", ".hero .b", ".hero .c", ".statement .s1", ".statement .s2", ".statement .s3", ".statement .s4"];
+  figs.forEach((sel, k) => setImg($(sel), pool[k % pool.length]));
+}
+
+async function fetchRepos(){
+  const key = "gh-cache-" + CONFIG.githubUser;
+  try {
+    const c = JSON.parse(localStorage.getItem(key) || "null");
+    if (c && Date.now() - c.t < 36e5) return c.d;          // 1-hour cache
+  } catch (e) {}
+  const res = await fetch(`https://api.github.com/users/${CONFIG.githubUser}/repos?per_page=100&sort=pushed`);
+  if (!res.ok) throw new Error(res.status === 404 ? "GitHub user not found — set githubUser in the CONFIG block." : `GitHub API error ${res.status}`);
+  const d = await res.json();
+  try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), d })); } catch (e) {}
+  return d;
+}
+
+async function init(){
+  let repos = [];
+  try {
+    repos = (await fetchRepos()).filter(r =>
+      (CONFIG.includeForks || !r.fork) && !r.archived &&
+      !CONFIG.hideRepos.includes(r.name) &&
+      (!CONFIG.onlyTopic || (r.topics || []).includes(CONFIG.onlyTopic)));
+    repos.sort((a, b) => {
+      const pa = CONFIG.pinFirst.indexOf(a.name), pb = CONFIG.pinFirst.indexOf(b.name);
+      if (pa !== -1 || pb !== -1) return (pa === -1 ? 1e9 : pa) - (pb === -1 ? 1e9 : pb);
+      return new Date(b.pushed_at) - new Date(a.pushed_at);
+    });
+    $("#status").textContent = "";
+  } catch (err) {
+    $("#status").textContent = err.message;
+  }
+  items = toItems(repos);
+  $("#repoCount").textContent = `${items.length} project${items.length === 1 ? "" : "s"} — synced live with GitHub`;
+  renderFilters(); renderGrid(); fillCollages();
+}
+init();
+</script>
+</body>
+</html>

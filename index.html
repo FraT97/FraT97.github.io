@@ -45,6 +45,28 @@
   .hud-right .pill{background:rgba(20,20,20,.88);border-color:var(--bord)}
   .hud-right .pill:hover{background:var(--cream);color:var(--bord);border-color:var(--cream)}
   #count b{color:var(--orange)}
+  #count{cursor:pointer}
+  #count[aria-expanded="true"]{background:#fff;color:#141414}
+
+  /* projects menu (GTA-style waypoint picker) */
+  #menu{position:fixed;top:66px;right:16px;z-index:30;width:min(340px,calc(100% - 32px));max-height:min(70vh,560px);display:flex;flex-direction:column;background:rgba(20,20,20,.96);border:3px solid #fff;border-radius:16px;box-shadow:0 10px 0 var(--red);overflow:hidden;transform:translateY(-12px) scale(.97);opacity:0;visibility:hidden;transition:transform .25s,opacity .25s,visibility 0s .25s}
+  #menu.open{transform:none;opacity:1;visibility:visible;transition:transform .25s,opacity .25s,visibility 0s}
+  #menu .mh{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:2px solid rgba(255,255,255,.15)}
+  #menu .mh span{font-size:1.4rem}
+  #menu .mh button{background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;padding:4px 8px}
+  #menuList{overflow-y:auto;padding:6px}
+  #menuList .grp{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a;padding:10px 10px 4px}
+  .mi{display:flex;align-items:center;gap:12px;width:100%;padding:10px;border:none;border-radius:10px;background:none;color:#fff;font:700 .82rem "Space Mono",monospace;text-transform:uppercase;text-align:left;cursor:pointer}
+  .mi:hover,.mi:focus-visible{background:rgba(255,255,255,.1);outline:none}
+  .mi.active{background:var(--red)}
+  .mi[disabled]{opacity:.45;cursor:default}
+  .mi .dot{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #000;display:grid;place-items:center;font-size:.7rem;background:#e30613;color:#fff}
+  .mi .dot.w{background:#fff;color:#000}
+  .mi .dot.g{background:#8a8a8a}
+  .mi .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mi .m{flex:none;font-weight:400;opacity:.7;font-size:.72rem}
+  #toast{position:fixed;left:50%;top:76px;transform:translate(-50%,-10px);z-index:31;background:var(--red);color:#fff;padding:9px 16px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
 
   /* compass */
   #compass{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:9;display:none;align-items:center;gap:10px;background:rgba(20,20,20,.88);padding:6px 14px 6px 8px;border-radius:999px;font-size:.75rem;text-transform:uppercase;font-weight:700;white-space:nowrap;max-width:calc(100% - 32px)}
@@ -86,19 +108,30 @@
   body.touch #mm{width:130px;height:130px}
 
   /* touch controls */
-  #touch{display:none;position:fixed;left:0;right:0;bottom:0;z-index:11;justify-content:space-between;align-items:flex-end;padding:16px;pointer-events:none}
-  body.touch #touch{display:flex}
-  body.touch #help{bottom:auto;top:120px}
-  body.touch #panel{bottom:auto;top:76px;transform:translateY(calc(-100% - 120px)) rotate(2deg)}
+  #touch{display:none;position:fixed;right:14px;bottom:18px;z-index:11}
+  body.touch #touch{display:block}
+  body.touch #help{display:none}
+  body.touch #panel{top:auto;bottom:10px;left:10px;right:10px;width:auto;max-height:62vh;overflow-y:auto;transform:translateY(calc(100% + 60px)) rotate(-2deg)}
   body.touch #panel.show{transform:none}
   body.touch #panel img{aspect-ratio:21/9}
-  body.touch #compass{top:auto;bottom:110px}
-  #touch .grp{display:flex;gap:12px;pointer-events:auto}
-  #touch .grp.right{flex-direction:column;align-items:flex-end}
-  #touch .row{display:flex;gap:12px}
-  #touch button{width:68px;height:68px;border-radius:50%;border:3px solid var(--cream);background:rgba(20,20,20,.78);color:var(--cream);font:400 1.5rem Anton,sans-serif;touch-action:none;-webkit-tap-highlight-color:transparent}
-  #touch button.on{background:var(--orange);color:var(--dark)}
-  #touch button.wide{width:auto;border-radius:999px;padding:0 18px;height:52px;font-size:1rem}
+  body.touch #panel .pb{padding:12px 14px 14px;gap:8px}
+  body.touch #panel h2{font-size:1.6rem}
+  body.touch #compass{top:auto;bottom:22px;left:50%;max-width:calc(100% - 150px)}
+  #touchBell{width:58px;height:58px;border-radius:50%;border:3px solid #fff;background:rgba(20,20,20,.78);font-size:1.5rem;touch-action:none;-webkit-tap-highlight-color:transparent}
+  #touchBell:active{background:var(--red)}
+  #joy{position:fixed;z-index:8;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(20,20,20,.25);display:none;pointer-events:none}
+  #joy.on{display:block}
+  #joy .knob{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:rgba(255,255,255,.92);border:3px solid var(--red);box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  #touchHint{display:none;position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:9;background:rgba(20,20,20,.85);color:#fff;padding:10px 18px;border-radius:999px;font-size:.8rem;font-weight:700;text-transform:uppercase;white-space:nowrap;transition:opacity .6s;opacity:0;pointer-events:none}
+  body.touch.playing #touchHint{display:block}
+  #touchHint.show{opacity:1}
+  @media (max-width:600px){
+    .hud-right{max-width:62%;gap:6px}
+    .hud-right .pill{padding:6px 10px;font-size:.68rem}
+    #bellBtn{display:none}
+    .logo .big{font-size:1.7rem}
+    .logo .small{font-size:.6rem}
+  }
 
   /* preview modal */
   #modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:16px}
@@ -135,7 +168,7 @@
     <div class="small" id="logoSmall">Web developer</div>
   </div>
   <div class="hud-right">
-    <span class="pill" id="count">Projects <b>0</b>/0</span>
+    <button class="pill" id="count" aria-haspopup="true" aria-expanded="false">☰ Projects <b>0</b>/0</button>
     <button class="pill" id="bellBtn" title="Ring the bell (B)">🔔 Bell</button>
     <button class="pill" id="resetBtn" title="Reset bike (R)">↺ Reset</button>
     <a class="pill" id="classicBtn" href="#">List view</a>
@@ -149,6 +182,12 @@
 
 <div id="help"></div>
 
+<nav id="menu" aria-label="Projects">
+  <div class="mh"><span class="anton">Set a route</span><button id="menuClose" aria-label="Close">✕</button></div>
+  <div id="menuList"></div>
+</nav>
+<div id="toast"></div>
+
 <div id="minimap" aria-hidden="true">
   <canvas id="mm"></canvas>
   <div class="bars"><span title="Projects found"><i id="barFound"></i></span><span title="Speed"><i id="barSpeed"></i></span></div>
@@ -157,18 +196,10 @@
 <aside id="panel" aria-live="polite"><div id="panelInner"></div></aside>
 
 <div id="touch">
-  <div class="grp">
-    <button data-k="tLeft" aria-label="Steer left">◀</button>
-    <button data-k="tRight" aria-label="Steer right">▶</button>
-  </div>
-  <div class="grp right">
-    <button class="wide" data-k="tBell">🔔 Bell</button>
-    <div class="row">
-      <button data-k="tDown" aria-label="Brake">▼</button>
-      <button data-k="tUp" aria-label="Pedal">▲</button>
-    </div>
-  </div>
+  <button id="touchBell" aria-label="Ring the bell">🔔</button>
 </div>
+<div id="joy" aria-hidden="true"><div class="knob"></div></div>
+<div id="touchHint">☝️ Drag anywhere to ride</div>
 
 <div id="modal" role="dialog" aria-modal="true">
   <div class="box">
@@ -194,6 +225,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 const CONFIG = {
   name: "Francesco",                    // becomes the giant red-and-white letters
   tagline: "Web developer · Amsterdam",
+  bigWord: "AMSTERDAM",                 // the big red-and-white letters at the start of the street
   githubUser: "FraT97",                 // your GitHub username
   email: "you@example.com",
   linkedin: "",                         // full URL, or leave empty
@@ -254,8 +286,8 @@ const pick = arr => arr[Math.floor(rand() * arr.length)];
 $("#logoSmall").textContent = CONFIG.tagline;
 $("#classicLink").href = $("#classicBtn").href = CONFIG.classicUrl;
 $("#help").innerHTML = isTouch
-  ? "Use the buttons to <b>ride</b> · find the glowing pads"
-  : "<b>WASD / Arrows</b> ride · <b>Space</b> skid · <b>B</b> bell · <b>R</b> reset · <b>Scroll</b> zoom";
+  ? "Drag anywhere with one finger to <b>ride</b>"
+  : "<b>WASD / Arrows</b> ride · <b>M</b> projects menu · <b>B</b> bell · <b>R</b> reset · <b>Scroll</b> zoom";
 
 /* =========================================================
    DATA (GitHub)
@@ -333,7 +365,7 @@ function toProjects(repos){
    ========================================================= */
 const canvas = $("#c");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.5 : 2));   // lighter on phones
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -349,7 +381,7 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0x5a5450, 1.2));
 const sun = new THREE.DirectionalLight(0xffffff, 2.2);
 sun.position.set(14, 26, 10);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(isTouch ? 1024 : 2048, isTouch ? 1024 : 2048);
 Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 90 });
 sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.06;
 scene.add(sun, sun.target);
@@ -727,7 +759,7 @@ function addCone(x, z){
 function addLetters(font, z, size){
   if (!font) return;
   const items = []; let x = 0;
-  [...CONFIG.name.toUpperCase()].forEach((ch, i) => {
+  [...String(CONFIG.bigWord || "AMSTERDAM").toUpperCase()].forEach((ch, i) => {
     if (ch === " ") { x += size * .6; return; }
     const geo = new TextGeometry(ch, { font, size, height: .7, curveSegments: 5, bevelEnabled: true, bevelThickness: .06, bevelSize: .04, bevelSegments: 2 });
     geo.computeBoundingBox();
@@ -1009,7 +1041,6 @@ function buildWorld(projects, font){
     x: 3.4, z: ROAD_LEN - 40, face: 0, kind: "contact", data: {}, accent: COL.cream,
     art: boardArt({ bg: "#e30613", fg: "#ffffff", accent: "#141414", kicker: "Let's grab a koffie", title: "Say hello", body: CONFIG.email, foot: "▼ Park here to get in touch" })
   });
-  [[4.2, ROAD_LEN - 27], [4.8, ROAD_LEN - 27.7], [3.6, ROAD_LEN - 27.7]].forEach(([x, z]) => addCone(x, z));
   streetSign(-6.3, ROAD_LEN - 4, "DAMRAK", Math.PI / 2);
   streetSign(-6.3, 1.2, "DAM", Math.PI / 2);
   groundText("DAM SQUARE  ✕  MY PROJECTS", 0, 3.2, 12.5);
@@ -1063,11 +1094,10 @@ function buildWorld(projects, font){
   for (let z = 2; z < ROAD_LEN - 1; z += 2.4) {
     const p = { x: ROAD_HALF - .35, z };
     if (blocked(p.x, p.z, .3)) continue;
-    if (Math.round(z / 2.4) % 4 === 0) lampList.push({ x: ROAD_HALF - .45, z }); else bollardList.push(p);
+    if (Math.round(z / 2.4) % 4 === 0) lampList.push({ x: ROAD_HALF - .45, z });   // lamps only, no bollards in the way
   }
   for (let x = -ROAD_HALF + .4; x < ROAD_HALF; x += 1.6) bollardList.push({ x, z: ROAD_LEN + .3 });   // end of the street
   for (const x of [-4, 4]) treeList.push({ x, z: ROAD_LEN + 2.2, s: 1.1 });
-  for (let z = 6; z < ROAD_LEN - 2; z += 8.5) if (!blocked(-ROAD_HALF + 1.2, z, 1.2)) treeList.push({ x: -ROAD_HALF + 1.2, z, s: rr(.9, 1.1) });
   for (let x = -SQ_HALF + 3; x <= SQ_HALF - 3; x += 7) for (const z of [-2.2, -SQ_DEPTH + 2.2]) if (!blocked(x, z, 1.4) && Math.abs(x) > ROAD_HALF + 1.5) treeList.push({ x, z, s: rr(1, 1.25) });
   for (let z = -6; z > -SQ_DEPTH + 4; z -= 8) for (const x of [-SQ_HALF + 2.2, SQ_HALF - 2.2]) if (!blocked(x, z, 1.4)) treeList.push({ x, z, s: rr(1, 1.25) });
   for (let z = -3; z > -SQ_DEPTH; z -= 5) for (const x of [-SQ_HALF + .6, SQ_HALF - .6]) if (!blocked(x, z, .5)) lampList.push({ x, z });
@@ -1090,26 +1120,57 @@ addEventListener("keydown", e => {
 });
 addEventListener("keyup", e => { keys[e.key.toLowerCase()] = false; });
 addEventListener("blur", () => { for (const k in keys) keys[k] = false; });
-document.querySelectorAll("[data-k]").forEach(b => {
-  const k = b.dataset.k;
-  b.addEventListener("pointerdown", e => { e.preventDefault(); b.setPointerCapture?.(e.pointerId); keys[k] = true; b.classList.add("on"); if (k === "tBell") ding(); });
-  for (const ev of ["pointerup", "pointercancel", "lostpointercapture"]) b.addEventListener(ev, () => { keys[k] = false; b.classList.remove("on"); });
+$("#touchBell").addEventListener("pointerdown", e => { e.preventDefault(); ding(); });
+
+/* One-finger control: put a finger down anywhere and drag the way you want to ride.
+   Further from where you touched = faster. Lift the finger to roll to a stop. */
+const joy = { on: false, id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, JOY_R = 60;
+function joyMove(e){
+  let dx = e.clientX - joy.x0, dy = e.clientY - joy.y0; const d = Math.hypot(dx, dy);
+  if (d > JOY_R) { dx *= JOY_R / d; dy *= JOY_R / d; }
+  joy.dx = dx; joy.dy = dy;
+  $("#joy .knob").style.transform = `translate(${dx}px, ${dy}px)`;
+}
+canvas.addEventListener("pointerdown", e => {
+  if (!started || joy.on || e.pointerType === "mouse") return;
+  e.preventDefault(); canvas.setPointerCapture?.(e.pointerId);
+  Object.assign(joy, { on: true, id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, dy: 0 });
+  const el = $("#joy"); el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; el.classList.add("on");
+  $("#joy .knob").style.transform = "";
+  $("#touchHint").classList.remove("show");
 });
-let zoom = innerWidth < 700 ? 1.3 : 1;
+canvas.addEventListener("pointermove", e => { if (joy.on && e.pointerId === joy.id) joyMove(e); });
+for (const ev of ["pointerup", "pointercancel", "lostpointercapture"]) canvas.addEventListener(ev, e => {
+  if (joy.on && e.pointerId === joy.id) { joy.on = false; $("#joy").classList.remove("on"); }
+});
+const wrapAngle = a => Math.atan2(Math.sin(a), Math.cos(a));
+
+let zoom = 1;
 addEventListener("wheel", e => { zoom = clamp(zoom + e.deltaY * .0012, .55, 1.8); }, { passive: true });
 $("#resetBtn").onclick = () => resetBike();
 $("#bellBtn").onclick = () => ding();
 
-const input = () => ({
-  th: (keys.w || keys.arrowup || keys.z || keys.tUp ? 1 : 0) - (keys.s || keys.arrowdown || keys.tDown ? 1 : 0),
-  steer: (keys.a || keys.arrowleft || keys.q || keys.tLeft ? 1 : 0) - (keys.d || keys.arrowright || keys.tRight ? 1 : 0),
-  skid: !!(keys[" "] || keys.shift)
-});
+function input(){
+  if (joy.on) {
+    const mag = Math.hypot(joy.dx, joy.dy) / JOY_R;
+    if (mag < .18) return { th: 0, steer: 0, skid: false, cap: 0 };          // dead zone: roll to a stop
+    // the camera never rotates, so screen-right = world +X and screen-down = world +Z
+    const want = Math.atan2(joy.dx, joy.dy), diff = wrapAngle(want - st.heading);
+    const cap = 2 + (MAX_SPEED - 2) * clamp((mag - .18) / .7, 0, 1);
+    const behind = Math.abs(diff) > 1.6;                                  // finger points backwards → slow down and turn around
+    return { th: !behind && st.speed < cap ? 1 : 0, steer: clamp(diff * 2.2, -1, 1), skid: false, cap: behind ? 1.2 : cap };
+  }
+  return {
+    th: (keys.w || keys.arrowup || keys.z ? 1 : 0) - (keys.s || keys.arrowdown ? 1 : 0),
+    steer: (keys.a || keys.arrowleft || keys.q ? 1 : 0) - (keys.d || keys.arrowright ? 1 : 0),
+    skid: !!(keys[" "] || keys.shift)
+  };
+}
 
 /* =========================================================
    PHYSICS
    ========================================================= */
-const BIKE_R = .65;
+const BIKE_R = .65, MAX_SPEED = 8;     // top speed (was 13.5)
 let shake = 0;
 const _fwd = new THREE.Vector3(), _tmp = new THREE.Vector3();
 
@@ -1151,16 +1212,20 @@ function collide(){
 }
 
 function updateBike(dt, t){
-  const { th, steer, skid } = input();
+  const inp = input(), { th, steer, skid } = inp;
   let s = st.speed;
-  if (th > 0) s += (s < 0 ? 22 : 11) * dt;
+  if (th > 0) s += (s < 0 ? 18 : 6.5) * dt;
   else if (th < 0) s -= (s > .2 ? 24 : 5) * dt;
   else s -= Math.sign(s) * Math.min(Math.abs(s), 2.6 * dt);    // bikes roll a long way
   if (skid) s -= Math.sign(s) * Math.min(Math.abs(s), 7 * dt);
-  s = clamp(s, -3, 13.5); st.speed = s;
+  s = clamp(s, -2.5, MAX_SPEED);
+  if (inp.cap !== undefined && s > inp.cap) s = Math.max(inp.cap, s - 9 * dt);   // joystick speed
+  st.speed = s;
 
   st.steerVis += (steer - st.steerVis) * (1 - Math.exp(-8 * dt));
-  st.heading += st.steerVis * 2.3 * clamp(s / 3.5, -1, 1) * (skid ? 1.5 : 1) * dt;
+  // with the finger control the bike can also turn on the spot, so turning around is easy
+  const turn = joy.on ? Math.max(.85, clamp(Math.abs(s) / 2.5, 0, 1)) : clamp(s / 3.5, -1, 1);
+  st.heading += st.steerVis * 2.3 * turn * (skid ? 1.5 : 1) * dt;
 
   _fwd.set(Math.sin(st.heading), 0, Math.cos(st.heading));
   _tmp.copy(_fwd).multiplyScalar(s);
@@ -1250,7 +1315,7 @@ function updatePuffs(dt){
    ZONES, PANEL, COMPASS
    ========================================================= */
 let current = null, projectsTotal = 0, found = 0;
-function updateCount(){ $("#count").innerHTML = `Projects <b>${found}</b>/${projectsTotal}`; }
+function updateCount(){ $("#count").innerHTML = `☰ Projects <b>${found}</b>/${projectsTotal}`; if ($("#menu") && $("#menu").classList.contains("open")) renderMenu(); }
 
 function panelHtml(z){
   if (z.kind === "about") return `
@@ -1292,7 +1357,7 @@ function panelHtml(z){
                     <a class="pill" href="${esc(p.live)}" target="_blank" rel="noopener">Visit ↗</a>` : ""}
         ${p.code ? `<a class="pill" href="${esc(p.code)}" target="_blank" rel="noopener">GitHub ↗</a>` : ""}
       </div>
-      <span class="hint">${isTouch ? "Tap a button to open" : `Enter ↵ to ${p.live ? "preview" : "open the code"}`}</span>
+      <span class="hint">${isTouch ? "Tap a button to open · keep dragging to ride on" : `Enter ↵ to ${p.live ? "preview" : "open the code"}`}</span>
     </div>`;
 }
 function activate(){
@@ -1333,6 +1398,11 @@ function updateCompass(){
   const el = $("#compass");
   if (!started || current) { el.classList.remove("show"); return; }
   const left = zones.filter(z => z.kind === "project" && !z.visited);
+  if (waypoint) {
+    const d = Math.hypot(waypoint.x - st.pos.x, waypoint.z - st.pos.z), [nx, nz] = routePoints(waypoint.x, waypoint.z)[1];
+    $("#arrow").style.display = ""; $("#arrow").style.transform = `rotate(${Math.atan2(nx - st.pos.x, -(nz - st.pos.z))}rad)`;
+    $("#compassLabel").textContent = `➜ ${zoneLabel(waypoint)} · ${Math.round(d)}m`; el.classList.add("show"); return;
+  }
   if (!left.length) {
     if (projectsTotal) { $("#arrow").style.display = "none"; $("#compassLabel").textContent = "✕✕✕ All projects found — come say hello!"; el.classList.add("show"); }
     return;
@@ -1345,6 +1415,86 @@ function updateCompass(){
   $("#compassLabel").textContent = `${tgt.data.title} · ${Math.round(bestD)}m`;
   el.classList.add("show");
 }
+
+/* ---------- GTA-style waypoint: pick a project from the menu, follow the route ---------- */
+let waypoint = null;
+const beacon = new THREE.Group(); beacon.visible = false; scene.add(beacon);
+{
+  const bm = new THREE.MeshBasicMaterial({ color: 0xe30613, transparent: true, opacity: .32, depthWrite: false });
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, 40, 16, 1, true), bm); beam.position.y = 20; beacon.add(beam);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, 40, 8), new THREE.MeshBasicMaterial({ color: 0xff4b55, transparent: true, opacity: .75 })); core.position.y = 20; beacon.add(core);
+  const ringB = new THREE.Mesh(new THREE.TorusGeometry(3.7, .14, 8, 64), new THREE.MeshBasicMaterial({ color: 0xe30613 })); ringB.rotation.x = Math.PI / 2; ringB.position.y = .2; beacon.add(ringB);
+  beacon.userData.ring = ringB;
+}
+function zoneLabel(z){ return z.kind === "about" ? `About ${CONFIG.name}` : z.kind === "contact" ? "Say hello" : z.data.title; }
+function setWaypoint(z){
+  waypoint = z;
+  beacon.visible = !!z;
+  if (z) { beacon.position.set(z.x, 0, z.z); toast(`Route set → ${zoneLabel(z)}`); ding(1); }
+  renderMenu();
+}
+let toastT = 0;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2200); }
+function updateBeacon(t){
+  if (!waypoint) return;
+  const s = 1 + Math.sin(t * 4) * .08; beacon.userData.ring.scale.set(s, s, 1);
+  if (current === waypoint) { setWaypoint(null); toast("You have arrived ✕✕✕"); }
+}
+// route that walks around the monument instead of through it
+function routePoints(tx, tz){
+  const pts = [[st.pos.x, st.pos.z]];
+  let ax = st.pos.x, az = st.pos.z;
+  if (az > 0 && tz <= 0) { ax = clamp(ax, -ROAD_HALF + 2, ROAD_HALF - 2); az = -1; pts.push([ax, az]); }
+  if (az <= 0 && tz > 0) { ax = clamp(tx, -ROAD_HALF + 2, ROAD_HALF - 2); az = 1; }
+  if (MON && az <= 0 && tz <= 0) {
+    const dx = tx - ax, dz = tz - az, L2 = dx * dx + dz * dz || 1;
+    const u = clamp(((MON.x - ax) * dx + (MON.z - az) * dz) / L2, 0, 1);
+    const cx = ax + dx * u, cz = az + dz * u, d = Math.hypot(cx - MON.x, cz - MON.z);
+    if (d < 9.5 && u > 0 && u < 1) {
+      let nx = cx - MON.x, nz = cz - MON.z; const nl = Math.hypot(nx, nz);
+      if (nl < .01) { nx = -dz; nz = dx; } const n2 = Math.hypot(nx, nz);
+      pts.push([MON.x + nx / n2 * 10.5, MON.z + nz / n2 * 10.5]);
+    }
+  }
+  if (az > 0 && tz > 0) { /* same street: straight */ }
+  else if (st.pos.z <= 0 && tz > 0) pts.push([clamp(tx, -ROAD_HALF + 2, ROAD_HALF - 2), -1], [clamp(tx, -ROAD_HALF + 2, ROAD_HALF - 2), 1]);
+  pts.push([tx, tz]);
+  return pts;
+}
+
+/* ---------- the projects menu ---------- */
+function renderMenu(){
+  const list = $("#menuList"); if (!list) return;
+  const item = (z, dot, cls, meta) => {
+    const i = zones.indexOf(z), dis = z.kind === "empty";
+    return `<button class="mi${waypoint === z ? " active" : ""}" data-zone="${i}"${dis ? " disabled" : ""}>
+      <span class="dot ${cls}">${dot}</span><span class="t">${esc(zoneLabel(z))}</span><span class="m">${meta}</span></button>`;
+  };
+  const dist = z => `${Math.round(Math.hypot(z.x - st.pos.x, z.z - st.pos.z))}m`;
+  const info = zones.filter(z => z.kind === "about" || z.kind === "contact");
+  const projs = zones.filter(z => z.kind === "project");
+  const empty = zones.filter(z => z.kind === "empty");
+  let html = `<div class="grp">Me</div>` + info.map(z => item(z, z.kind === "about" ? "i" : "@", z.kind === "about" ? "w" : "", dist(z))).join("");
+  html += `<div class="grp">Projects · ${found}/${projectsTotal} found</div>`;
+  html += projs.length ? projs.map(z => item(z, z.visited ? "✓" : pad2(z.data.index + 1), z.visited ? "w" : "", dist(z))).join("") : `<div class="grp" style="text-transform:none;letter-spacing:0">No projects yet.</div>`;
+  if (empty.length) html += `<div class="grp">Coming soon</div>` + empty.map(z => item(z, "·", "g", "soon")).join("");
+  if (waypoint) html += `<div class="grp"></div><button class="mi" data-clear="1"><span class="dot g">✕</span><span class="t">Clear route</span></button>`;
+  list.innerHTML = html;
+}
+function openMenu(open){
+  $("#menu").classList.toggle("open", open);
+  $("#count").setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) renderMenu();
+}
+$("#count").onclick = e => { e.stopPropagation(); openMenu(!$("#menu").classList.contains("open")); };
+$("#menuClose").onclick = () => openMenu(false);
+$("#menuList").addEventListener("click", e => {
+  const b = e.target.closest(".mi"); if (!b || b.disabled) return;
+  if (b.dataset.clear) { setWaypoint(null); toast("Route cleared"); return; }
+  setWaypoint(zones[+b.dataset.zone]); openMenu(false);
+});
+canvas.addEventListener("pointerdown", () => openMenu(false));
+addEventListener("keydown", e => { if (e.key === "Escape") openMenu(false); if (e.key.toLowerCase() === "m" && started) openMenu(!$("#menu").classList.contains("open")); });
 
 /* ---------- preview modal ---------- */
 function openPreview(url){
@@ -1419,11 +1569,15 @@ function drawMinimap(){
   c.setTransform(1, 0, 0, 1, 0, 0);
   const px = ox + st.pos.x * k, py = oy + st.pos.z * k;
   // route to the nearest undiscovered project
-  let best = 1e9; mmTarget = null;
-  for (const z of zones) if (z.kind === "project" && !z.visited) { const dd = Math.hypot(z.x - st.pos.x, z.z - st.pos.z); if (dd < best) { best = dd; mmTarget = z; } }
+  let best = 1e9; mmTarget = waypoint;
+  if (!mmTarget) for (const z of zones) if (z.kind === "project" && !z.visited) { const dd = Math.hypot(z.x - st.pos.x, z.z - st.pos.z); if (dd < best) { best = dd; mmTarget = z; } }
   if (mmTarget) {
-    c.save(); c.strokeStyle = "rgba(227,6,19,.9)"; c.lineWidth = 3 * d; c.setLineDash([7 * d, 5 * d]); c.lineCap = "round";
-    c.beginPath(); c.moveTo(px, py); c.lineTo(ox + mmTarget.x * k, oy + mmTarget.z * k); c.stroke(); c.restore();
+    const pts = routePoints(mmTarget.x, mmTarget.z);
+    c.save(); c.lineCap = "round"; c.lineJoin = "round";
+    if (waypoint) { c.strokeStyle = "#000"; c.lineWidth = 7 * d; c.beginPath(); pts.forEach(([x, z], i) => c[i ? "lineTo" : "moveTo"](ox + x * k, oy + z * k)); c.stroke(); }
+    c.strokeStyle = waypoint ? "#e30613" : "rgba(227,6,19,.9)"; c.lineWidth = (waypoint ? 4.5 : 3) * d;
+    if (!waypoint) c.setLineDash([7 * d, 5 * d]);
+    c.beginPath(); pts.forEach(([x, z], i) => c[i ? "lineTo" : "moveTo"](ox + x * k, oy + z * k)); c.stroke(); c.restore();
   }
   const RIM = W / 2 - 11 * d;
   for (const z of zones) {
@@ -1446,7 +1600,7 @@ function drawMinimap(){
   c.beginPath(); c.arc(W / 2, 10 * d, 8 * d, 0, TAU); c.fillStyle = "#000"; c.fill();
   c.fillStyle = "#fff"; c.font = `bold ${10 * d}px "Space Mono", monospace`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("N", W / 2, 10.5 * d);
   $("#barFound").style.width = (projectsTotal ? found / projectsTotal * 100 : 0) + "%";
-  $("#barSpeed").style.width = clamp(Math.abs(st.speed) / 13.5 * 100, 0, 100) + "%";
+  $("#barSpeed").style.width = clamp(Math.abs(st.speed) / MAX_SPEED * 100, 0, 100) + "%";
 }
 
 /* =========================================================
@@ -1464,7 +1618,8 @@ function updateCamera(dt, t){
     camera.lookAt(0, 0, -2);
   } else {
     const target = _tmp.copy(st.pos).addScaledVector(st.vel, .3);
-    const desired = target.clone().addScaledVector(camOff, zoom);
+    const portrait = innerHeight > innerWidth;
+    const desired = target.clone().addScaledVector(camOff, zoom * (portrait ? 1.45 : 1));   // pull back in portrait so you see more
     camera.position.lerp(desired, 1 - Math.exp(-3.5 * dt));
     look.lerp(target, 1 - Math.exp(-6 * dt));
     if (shake > 0) { camera.position.x += (Math.random() - .5) * shake; camera.position.y += (Math.random() - .5) * shake; shake = Math.max(0, shake - dt * 2); }
@@ -1478,19 +1633,25 @@ function updateCamera(dt, t){
   renderer.getDrawingBufferSize(_size);
   XR.uHole.value.set((_hole.x * .5 + .5) * _size.x, (_hole.y * .5 + .5) * _size.y);
   XR.uHoleDepth.value = _hole.z * .5 + .5;
-  XR.uHoleR.value = started ? 80 * renderer.getPixelRatio() / zoom : 0;
+  XR.uHoleR.value = started ? 80 * renderer.getPixelRatio() / (zoom * (innerHeight > innerWidth ? 1.45 : 1)) : 0;
 }
 
 const clock = new THREE.Clock();
 function tick(){
   const dt = Math.min(clock.getDelta(), .05), t = clock.elapsedTime;
   if (started) updateBike(dt, t);
-  updateDynamics(dt); updatePuffs(dt); updatePigeons(dt, t); updateZones(dt, t); updateCamera(dt, t); updateCompass(); drawMinimap();
+  updateDynamics(dt); updatePuffs(dt); updatePigeons(dt, t); updateZones(dt, t); updateBeacon(t); updateCamera(dt, t); updateCompass(); drawMinimap();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
+function fitCamera(){
+  camera.aspect = innerWidth / innerHeight;
+  camera.fov = camera.aspect < 1 ? 52 : 42;          // a slightly wider lens when the phone is upright
+  camera.updateProjectionMatrix();
+}
+fitCamera();
 addEventListener("resize", () => {
-  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  fitCamera();
   renderer.setSize(innerWidth, innerHeight);
   sizeMinimap();
 });
@@ -1529,6 +1690,7 @@ $("#start").onclick = () => {
   $("#loader").classList.add("gone");
   $("#help").classList.add("show");
   setTimeout(() => $("#help").classList.remove("show"), 8000);
+  if (isTouch) { $("#touchHint").classList.add("show"); setTimeout(() => $("#touchHint").classList.remove("show"), 7000); }
   canvas.focus();
 };
 boot();

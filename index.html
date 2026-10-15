@@ -337,7 +337,7 @@ function toProjects(repos){
       image: ref ? `https://opengraph.githubassets.com/1/${ref.owner}/${ref.name}` : null,
       tags: [], lang: null, year: null, stars: 0
     };
-       const live = e.url || base.live;
+    const live = e.url === false ? null : (e.url || base.live);   // url: false = no live site
     listed.push({
       ...base,
       title: e.title || base.title,

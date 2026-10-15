@@ -210,22 +210,20 @@ const CONFIG = {
      • A project without a repo (client work) just needs title + url.
      • Entries left completely empty show up as "Coming soon" spots, ready for you to fill in. */
   projects: [
-    {
-      title: "NSDE Foundation",
-      description: "WordPress website for a foundation supporting education for Afghan girls — site build, custom CSS and content structure.",
-      url: "https://example.org",       // ← real site URL
-      tags: ["WordPress", "CSS", "Non-profit"],
-      client: true                      // client work gets a white billboard
-    },
-    { title: "", github: "", url: "", description: "", tags: [] },   // ← empty spot: fill me in
-    { title: "", github: "", url: "", description: "", tags: [] },   // ← empty spot
-    { title: "", github: "", url: "", description: "", tags: [] },   // ← empty spot
-    { title: "", github: "", url: "", description: "", tags: [] },   // ← empty spot
-    { title: "", github: "", url: "", description: "", tags: [] },   // ← empty spot
+    /* ESEMPI — copia una riga qui sotto, togli i // e compila:
+    { github: "nome-repo" },                                  // un tuo repo: titolo, descrizione, lingua e link presi da GitHub
+    { github: "nome-repo", title: "Titolo mio", tags: ["CSS"] },  // repo + i tuoi testi (sovrascrivono quelli di GitHub)
+    { title: "NSDE Foundation", url: "https://...", description: "...", tags: ["WordPress"], client: true },  // progetto senza repo
+    */
+    { title: "", github: "", url: "", description: "", tags: [] },   // ← spazio vuoto ("Coming soon")
+    { title: "", github: "", url: "", description: "", tags: [] },
+    { title: "", github: "", url: "", description: "", tags: [] },
+    { title: "", github: "", url: "", description: "", tags: [] },
+    { title: "", github: "", url: "", description: "", tags: [] },
   ],
 
   // Also add your other public GitHub repos automatically (after the list above)?
-  autoAddRepos: true,
+  autoAddRepos: false,                  // false = mostra SOLO i progetti scritti qui sopra
   onlyTopic: null,                      // e.g. "portfolio" → auto-add only repos with that topic
   includeForks: false,
   hideRepos: ["FrancescoT-portfolio.io", "FraT97.github.io"],  // never auto-add this website's own repo

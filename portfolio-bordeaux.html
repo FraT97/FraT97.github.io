@@ -147,7 +147,7 @@
 
 <header id="top">
   <a href="#" class="logo" aria-label="Home">
-    <span class="mark"><span id="logoInitials">FC</span>
+    <span class="mark"><span id="logoInitials">FT</span>
       <svg viewBox="0 0 34 52" aria-hidden="true"><path fill="currentColor" d="M17 0 L18.6 23 L34 26 L18.6 29 L17 52 L15.4 29 L0 26 L15.4 23 Z"/></svg>
     </span>
     <span class="sub" id="logoSub">DEVELOPMENT</span>
@@ -251,24 +251,22 @@ const CONFIG = {
   heroWords: ["Crafted", "Websites"],
   statement: "I build distinctive websites with a fresh perspective and an eye for detail.",
 
-  // GitHub filtering
-  onlyTopic: null,                      // e.g. "portfolio" → show only repos with that topic
-  includeForks: false,
-  hideRepos: ["FrancescoT-portfolio.io", "FraT97.github.io"],  // this website's own repo
-  pinFirst: [],                         // repo names to show first
-
   skills: ["HTML", "CSS", "JavaScript", "WordPress", "Responsive design", "Git & GitHub", "R"],
 
-  // Projects not on GitHub. The FIRST one is the big "Selected work" piece.
-  featured: [
-    {
-      title: "NSDE Foundation",
-      description: "WordPress website for a foundation supporting education for Afghan girls — site build, custom CSS and content structure.",
-      url: "https://example.org",       // ← real site URL
-      image: "",                        // optional; empty = automatic screenshot of the URL
-      tags: ["WordPress", "CSS", "Non-profit"]
-    }
-  ]
+  /* ---------- YOUR PROJECTS (same list as index.html — copy it from there when you change it) ----------
+     The first project marked  client: true  is shown big in "Selected work". */
+  projects: [
+    /* ESEMPI — copia una riga qui sotto, togli i // e compila:
+    { github: "nome-repo" },                                  // un tuo repo: titolo, descrizione, lingua e link presi da GitHub
+    { github: "nome-repo", title: "Titolo mio", tags: ["CSS"] },  // repo + i tuoi testi (sovrascrivono quelli di GitHub)
+    { title: "NSDE Foundation", url: "https://...", description: "...", tags: ["WordPress"], client: true },  // progetto senza repo
+    */
+            { title: "RIVALSA", github: "rivalsa", url: false, image: "img/img/rivalsa.png", description: "…", tags: ["Vite", "Node.js", "Full-stack"] },
+    { title: "IBAN-GUARD", github: "iban-guard", url: false, image: "img/img/iban-guard.png", description: "…", tags: ["Vite", "Node.js", "Full-stack"] },
+  { title: "PREAVVISO", github: "preavviso", url: false, image: "img/img/preavviso.png", description: "…", tags: ["Vite", "Node.js", "Full-stack"] },
+    { title: "NSDE FOUNDATION", url: "https://nsdefoundation.org/", description: "Sito WordPress per una fondazione che sostiene l'istruzione delle ragazze afghane", tags: ["WordPress", "CSS"], client: true },
+    { title: "HARRY POTTER snitch game", github: "Module-1-project", url: "https://frat97.github.io/Module-1-project/", description: "", tags: [] },
+  ],
 };
 /* ========================================================= */
 
@@ -349,34 +347,46 @@ function liveUrl(r){
 const prettyName = n => n.replace(/[-_]/g, " ");
 const year = d => new Date(d).getFullYear();
 
-/* ---------- featured (big frame) ---------- */
-const lead = CONFIG.featured[0];
-if (lead) {
-  setImg($("#frame"), lead.image || shot(lead.url, 1600), lead.title);
-  $("#frameTitle").textContent = lead.title;
-  $("#frameTags").textContent = (lead.tags || []).join(" · ");
-  $("#frame").dataset.preview = lead.url;
-} else {
-  $("#frame").remove();
-}
-
-/* ---------- project list ---------- */
+/* ---------- project list (same rules as the 3D site) ---------- */
 let items = [], activeFilter = "All";
 
+function parseRepo(v){
+  if (!v) return null;
+  const parts = String(v).trim().replace(/^https?:\/\/(www\.)?github\.com\//i, "").replace(/\.git$|\/$/g, "").split("/").filter(Boolean);
+  if (!parts.length) return null;
+  return parts.length >= 2 ? { owner: parts[0], name: parts[1] } : { owner: CONFIG.githubUser, name: parts[0] };
+}
 function toItems(repos){
-  const fromFeatured = CONFIG.featured.map(f => ({
-    title: f.title, description: f.description, live: f.url, code: null,
-    image: f.image || shot(f.url), tags: f.tags || [], lang: "Client work", year: null, stars: 0
-  }));
-  const fromRepos = repos.map(r => {
-    const live = liveUrl(r);
-    return {
-      title: prettyName(r.name), description: r.description || "", live, code: r.html_url,
-      image: live ? shot(live) : `https://opengraph.githubassets.com/1/${CONFIG.githubUser}/${r.name}`,
-      tags: (r.topics || []).slice(0, 4), lang: r.language, year: year(r.pushed_at), stars: r.stargazers_count
-    };
-  });
-  return [...fromFeatured, ...fromRepos];
+  const byName = new Map(repos.map(r => [r.name.toLowerCase(), r]));
+  const out = [];
+  for (const e of CONFIG.projects || []) {
+    const ref = parseRepo(e.github);
+    if (!e.title && !ref && !e.url) continue;                         // empty "coming soon" spot
+    const r = ref && ref.owner.toLowerCase() === String(CONFIG.githubUser).toLowerCase() ? byName.get(ref.name.toLowerCase()) : null;
+    const repoLive = r ? liveUrl(r) : null;
+    const live = e.url === false ? null : (e.url || repoLive);
+    out.push({
+      title: e.title || (ref ? prettyName(ref.name) : ""),
+      description: e.description || (r && r.description) || "",
+      live, client: !!e.client,
+      code: ref ? (r ? r.html_url : `https://github.com/${ref.owner}/${ref.name}`) : null,
+      image: e.image || (live ? shot(live) : ref ? `https://opengraph.githubassets.com/1/${ref.owner}/${ref.name}` : ""),
+      tags: e.tags && e.tags.length ? e.tags : (r ? (r.topics || []).slice(0, 4) : []),
+      lang: e.lang || (e.client ? "Client work" : r ? r.language : null),
+      year: r ? year(r.pushed_at) : null, stars: r ? r.stargazers_count : 0
+    });
+  }
+  return out;
+}
+function renderLead(){
+  const lead = items.find(i => i.client) || items[0];
+  if (!lead) { $("#frame").remove(); return; }
+  setImg($("#frame"), lead.image || (lead.live ? shot(lead.live, 1600) : ""), lead.title);
+  $("#frameTitle").textContent = lead.title;
+  $("#frameTags").textContent = (lead.tags || []).join(" · ");
+  if (lead.live) $("#frame").dataset.preview = lead.live;
+  else if (lead.code) $("#frame").onclick = () => window.open(lead.code, "_blank", "noopener");
+  $("#frame .play span").innerHTML = lead.live ? "View&nbsp;site" : "View&nbsp;code";
 }
 
 function renderGrid(){
@@ -384,7 +394,7 @@ function renderGrid(){
   $("#grid").innerHTML = list.map((p, i) => `
     <article class="card reveal">
       <figure class="thumb tint" style="margin:0;overflow:hidden">
-        <img src="${esc(p.image)}" alt="${esc(p.title)} preview" loading="lazy">
+        ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.title)} preview" loading="lazy">` : `<div class="ph"></div>`}
       </figure>
       <span class="num mono">${String(i + 1).padStart(2, "0")} ${p.lang ? "— " + esc(p.lang) : ""}</span>
       <h3 class="serif">${esc(p.title)}</h3>
@@ -397,7 +407,7 @@ function renderGrid(){
       <div class="actions">
         ${p.live ? `<button class="pill sm" data-preview="${esc(p.live)}">Preview</button>
                     <a class="pill sm" href="${esc(p.live)}" target="_blank" rel="noopener">Visit ↗</a>` : ""}
-        ${p.code ? `<a class="pill sm" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>` : ""}
+        ${p.code ? `<a class="pill sm" href="${esc(p.code)}" target="_blank" rel="noopener">GitHub ↗</a>` : ""}
       </div>
     </article>`).join("");
   observe();
@@ -415,7 +425,7 @@ function renderFilters(){
 
 function fillCollages(){
   // Prefer live-site screenshots; fall back to any project image
-  const pool = [...items.filter(i => i.live), ...items.filter(i => !i.live)].map(i => i.image);
+  const pool = [...items.filter(i => i.live), ...items.filter(i => !i.live)].map(i => i.image).filter(Boolean);
   if (!pool.length) return;
   const figs = [".hero .a", ".hero .b", ".hero .c", ".statement .s1", ".statement .s2", ".statement .s3", ".statement .s4"];
   figs.forEach((sel, k) => setImg($(sel), pool[k % pool.length]));
@@ -436,23 +446,12 @@ async function fetchRepos(){
 
 async function init(){
   let repos = [];
-  try {
-    repos = (await fetchRepos()).filter(r =>
-      (CONFIG.includeForks || !r.fork) && !r.archived &&
-      !CONFIG.hideRepos.includes(r.name) &&
-      (!CONFIG.onlyTopic || (r.topics || []).includes(CONFIG.onlyTopic)));
-    repos.sort((a, b) => {
-      const pa = CONFIG.pinFirst.indexOf(a.name), pb = CONFIG.pinFirst.indexOf(b.name);
-      if (pa !== -1 || pb !== -1) return (pa === -1 ? 1e9 : pa) - (pb === -1 ? 1e9 : pb);
-      return new Date(b.pushed_at) - new Date(a.pushed_at);
-    });
-    $("#status").textContent = "";
-  } catch (err) {
-    $("#status").textContent = err.message;
-  }
+  try { repos = await fetchRepos(); $("#status").textContent = ""; }
+  catch (err) { $("#status").textContent = ""; }                    // projects still show, just without GitHub extras
   items = toItems(repos);
-  $("#repoCount").textContent = `${items.length} project${items.length === 1 ? "" : "s"} — synced live with GitHub`;
-  renderFilters(); renderGrid(); fillCollages();
+  $("#repoCount").textContent = `${items.length} project${items.length === 1 ? "" : "s"}`;
+  if (!items.length) $("#status").textContent = "Projects coming soon.";
+  renderLead(); renderFilters(); renderGrid(); fillCollages();
 }
 init();
 </script>
